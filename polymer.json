@@ -1,0 +1,34 @@
+{
+    "entrypoint": "index.html",
+    "shell": "src/application-shell.js",
+    "npm": true,
+    "moduleResolution": "node",
+    "license": "MIT",
+    "fragments": [
+      "src/one-two.js",
+      "src/metadata.js",
+      "src/send-feedback.js",
+      "src/wrong-page.js"
+    ],
+  
+    "sources": [
+      "src/**"
+    ],
+  
+    "extraDependencies": [
+      "node_modules/@webcomponents/webcomponentsjs/*.js",
+      "manifest.json",
+      "package.json",
+      "sitemap.xml",
+      "robots.txt"
+    ],
+  
+    "builds": [{
+      "bundle": { "inlineScripts": false },
+      "js":     { "minify": true, "transformModulesToAmd": true },
+      "css":    { "minify": true },
+      "html":   { "minify": true },
+      "addServiceWorker": true
+      }]
+  }
+  
