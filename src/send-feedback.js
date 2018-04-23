@@ -1,8 +1,8 @@
 
-import { PolymerElement }       from '@polymer/polymer/polymer-element.js';
+import { PolymerElement, html }       from '@polymer/polymer/polymer-element.js';
 import { updateMetadata }       from './metadata.js';
 
-export class SendFeedback extends PolymerElement {
+class SendFeedback extends PolymerElement {
 
   static get is() { return 'send-feedback'; }
 
@@ -30,9 +30,11 @@ export class SendFeedback extends PolymerElement {
   }
 
   static get template() {
-    return `
+    return html`
 
-  `
+    <h1>Feedback</h1>
+
+  `;
   }
 
 }

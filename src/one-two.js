@@ -1,7 +1,7 @@
-import { PolymerElement }       from '@polymer/polymer/polymer-element.js';
+import { PolymerElement, html }       from '@polymer/polymer/polymer-element.js';
 import { updateMetadata }       from './metadata.js';
 
-export class OneTwo extends PolymerElement {
+class OneTwo extends PolymerElement {
 
   static get is() { return 'one-two'; }
 
@@ -30,7 +30,7 @@ export class OneTwo extends PolymerElement {
     }
   
     static get template() {
-      return `
+      return html`
   
       <style>
 

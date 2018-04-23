@@ -21,6 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { setPassiveTouchGestures, setRootPath } from '@polymer/polymer/lib/utils/settings.js';
 
 import '@polymer/app-layout/app-header-layout/app-header-layout.js';
 import '@polymer/app-layout/app-drawer-layout/app-drawer-layout.js';
@@ -28,10 +29,11 @@ import '@polymer/app-layout/app-header/app-header.js';
 import '@polymer/app-layout/app-drawer/app-drawer.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 
-import '@polymer/app-route/app-route.js';
 import '@polymer/app-route/app-location.js';
+import '@polymer/app-route/app-route.js';
 
 import '@polymer/iron-pages/iron-pages.js';
+import '@polymer/iron-selector/iron-selector.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
 
@@ -45,20 +47,19 @@ import '@polymer/paper-button/paper-button.js';
 
 import './myicons.js';
 
-import { OneTwo }             from './one-two.js';
-import { SendFeedback }       from './send-feedback.js';
-import { WrongPage }          from './wrong-page.js';
+setPassiveTouchGestures(true);
 
-export class ApplicationShell extends PolymerElement {
+setRootPath(PolymerElement.rootPath);
+
+class ApplicationShell extends PolymerElement {
 
   static get is() { return 'application-shell'; }
 
   static get properties() {
     return {
       page:         { type: String, reflectToAttribute: true, observer: '_pageChanged' },
-      rootPattern:  String,
       routeData:    Object,
-      subroute:     String,
+      subroute:     Object,
       opened:       { type: Boolean, reflectToAttribute: true },
       horizontal:   { type: Boolean },
       noAnimation:  { type: Boolean },
@@ -73,7 +74,7 @@ export class ApplicationShell extends PolymerElement {
 
   constructor() {
     super();
-    this.rootPattern = (new URL(this.rootPath)).pathname;
+    //this.rootPattern = (new URL(this.rootPath)).pathname;
   }
 
   connectedCallback() {
@@ -87,22 +88,37 @@ export class ApplicationShell extends PolymerElement {
   }
 
   _routePageChanged(page) {
-    this.page = page || 'one-two';
+    if (!page) {
+      // If no page was found in the route data, page will be an empty string.
+      // Default to 'view1' in that case.
+      this.page = 'one-two';
+    } else if (['one-two', 'send-feedback'].indexOf(page) !== -1) {
+      this.page = page;
+    } else {
+      this.page = 'wrong-page';
+    }
+
+    // Close a non-persistent drawer when the page & route are changed.
     if (!this.$.drawer.persistent) {
       this.$.drawer.close();
     }
   }
 
- _pageChanged(page) {
+  _pageChanged(page) {
     // Load page import on demand. Show 404 page if fails
-    //import(
-      /* webpackMode: "lazy" */
-    //  `../${page}.js`
-    //  ).catch(this._showPage404.bind(this));
-  }
-
-  _showPage404() {
-    this.page = 'wrong-page';
+    // Note: `polymer build` doesn't like string concatenation in
+    // the import statement, so break it up.
+    switch(page) {
+      case 'one-two':
+        import('./one-two.js');
+        break;
+      case 'send-feedback':
+        import('./send-feedback.js');
+        break;
+      case 'wrong-page':
+        import('./wrong-page.js');
+        break;
+    }
   }
 
   _toggleSearch() {
@@ -114,7 +130,7 @@ export class ApplicationShell extends PolymerElement {
   }
 
   static get template() {
-    return `
+    return html`
 
     <style>
     :host {
@@ -182,7 +198,8 @@ export class ApplicationShell extends PolymerElement {
       </div>
 
       <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-        <a name="one-two" href="[[rootPath]]one-two"><paper-item><h2>One</h2></paper-item></a>      
+        <a name="one-two"       href="[[rootPath]]one-two"><paper-item><h2>One</h2></paper-item></a>  
+        <a name="send-feedback" href="[[rootPath]]send-feedback"><paper-item><h2>Feedback</h2></paper-item></a>     
       </iron-selector>
 
     </app-drawer>

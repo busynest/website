@@ -1,7 +1,7 @@
-import { PolymerElement }       from "@polymer/polymer/polymer-element.js"
+import { PolymerElement, html }       from "@polymer/polymer/polymer-element.js"
 import { updateMetadata }       from './metadata.js';
 
-export class WrongPage extends PolymerElement {
+class WrongPage extends PolymerElement {
 
   static get is() { return 'wrong-page'; }
 
@@ -31,7 +31,7 @@ export class WrongPage extends PolymerElement {
   }
 
   static get template() {
-    return `
+    return html`
       <style>
         :host {
           display: block;
@@ -40,7 +40,7 @@ export class WrongPage extends PolymerElement {
       </style>
 
       Oops you hit a 404. <a href="[[rootPath]]">Head back to home.</a>
-    `
+    `;
   }
 }
 

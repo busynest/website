@@ -22,13 +22,73 @@
       "sitemap.xml",
       "robots.txt"
     ],
+
+    "lint": {
+      "rules": [
+        "polymer-3"
+      ]
+    },
   
-    "builds": [{
-      "bundle": { "inlineScripts": false },
-      "js":     { "minify": true, "transformModulesToAmd": true },
-      "css":    { "minify": true },
-      "html":   { "minify": true },
-      "addServiceWorker": true
-      }]
+    "builds": [
+      {
+        "name": "esm-bundled",
+        "browserCapabilities": [
+          "es2015",
+          "modules"
+        ],
+        "js": {
+          "minify": true
+        },
+        "css": {
+          "minify": true
+        },
+        "html": {
+          "minify": true
+        },
+        "bundle": {
+          "inlineScripts": false
+        },
+        "addServiceWorker": true
+      },
+      {
+        "name": "es6-bundled",
+        "browserCapabilities": [
+          "es2015"
+        ],
+        "js": {
+          "minify": true,
+          "transformModulesToAmd": true
+        },
+        "css": {
+          "minify": true
+        },
+        "html": {
+          "minify": true
+        },
+        "bundle": {
+          "inlineScripts": false
+        },
+        "addServiceWorker": true
+      },
+      {
+        "name": "es5-bundled",
+        "js": {
+          "minify": true,
+          "compile": true,
+          "transformModulesToAmd": true
+        },
+        "css": {
+          "minify": true
+        },
+        "html": {
+          "minify": true
+        },
+        "bundle": {
+          "inlineScripts": false
+        },
+        "addServiceWorker": true
+      }
+    ]
+    
   }
   
