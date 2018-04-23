@@ -4,7 +4,6 @@ const webpack                 = require('webpack');
 const HtmlWebpackPlugin       = require('html-webpack-plugin');
 const path                    = require('path');
 const BundleAnalyzerPlugin    = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const Visualizer              = require('webpack-visualizer-plugin');
 
 
 module.exports =  {
@@ -30,13 +29,6 @@ module.exports =  {
       ]
     },
   
-    plugins: [ new BundleAnalyzerPlugin(), new Visualizer(), new HtmlWebpackPlugin(),
-      
-      new webpack.optimize.AggressiveSplittingPlugin( {
-			  minSize: 30000,
-			  maxSize: 50000
-      } )
-
-    ],
+    plugins: [ new BundleAnalyzerPlugin() ],
   
   };
