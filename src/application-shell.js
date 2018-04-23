@@ -49,7 +49,7 @@ import './myicons.js';
 
 setPassiveTouchGestures(true);
 
-setRootPath(PolymerElement.rootPath);
+setRootPath(Polymer.rootPath);
 
 class ApplicationShell extends PolymerElement {
 
@@ -170,14 +170,14 @@ class ApplicationShell extends PolymerElement {
 
     <!-- APP LOCATION -->
     <app-location
-      route=              "{{route}}">
+      route=              "{{route}}"
       url-space-regex=    "^[[rootPath]]">
     </app-location>
 
     <!-- APP ROUTE -->
     <app-route
       route=    "{{route}}"
-      pattern=  "[[rootPattern]]:page"
+      pattern=  "[[rootPath]]:page"
       data=     "{{routeData}}"
       tail=     "{{subroute}}"></app-route>
 
