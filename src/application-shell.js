@@ -95,10 +95,10 @@ export class ApplicationShell extends PolymerElement {
 
  _pageChanged(page) {
     // Load page import on demand. Show 404 page if fails
-    import(
+    //import(
       /* webpackMode: "lazy" */
-      `../${page}.js`
-      ).catch(this._showPage404.bind(this));
+    //  `../${page}.js`
+    //  ).catch(this._showPage404.bind(this));
   }
 
   _showPage404() {
