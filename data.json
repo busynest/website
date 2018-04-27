@@ -1,0 +1,14 @@
+{
+	"king":"king",
+	"queen":"queen",
+	"pawn":"pawn",
+	"rook":"rook",
+	"knight":"knight",
+	"bishop":"bishop",
+	"blocks":"block",
+	"power":"power",
+	"speed":"speed",
+	"defense":"defense",
+	"magic":"magic",
+	"resources":"resources"
+}
