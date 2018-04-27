@@ -7,7 +7,9 @@ const BundleAnalyzerPlugin    = require('webpack-bundle-analyzer').BundleAnalyze
 const HtmlWebpackPlugin       = require('html-webpack-plugin');
 const CleanWebpackPlugin      = require('clean-webpack-plugin');
 const BabelLoader             = require('babel-loader');
-const UglifyJsPlugin          = require('uglifyjs-webpack-plugin');
+
+
+//const UglifyJsPlugin          = require('uglifyjs-webpack-plugin');
 //const config                  = require('../app.config')(true);
 
 // the path(s) that should be cleaned
@@ -23,7 +25,6 @@ let cleanOptions = {
   dry:      false,
   beforeEmit: true
 }
-
 
 module.exports =  {
 
@@ -48,7 +49,7 @@ module.exports =  {
     module: {
       rules: [
         { test: /\.html$/,  exclude: /(node_modules|bower_components)/, use: 'html-loader' },
-        { test: /\.js$/,    exclude: /(node_modules|bower_components)/, use: { loader:'babel-loader', options: { presets: ['@babel/preset-env'] }  } },
+        { test: /\.js$/, use: 'babel-loader'},
         { test: /\.json$/,  exclude: /(node_modules|bower_components)/, use: 'json-loader' }
       ]
     },
@@ -61,7 +62,7 @@ module.exports =  {
       new CleanWebpackPlugin(pathsToClean, cleanOptions),
 
       new HtmlWebpackPlugin({template: './index.html'}),
-
+/**
       new UglifyJsPlugin({
         cache: true,
         parallel: true,
@@ -71,7 +72,7 @@ module.exports =  {
           mangle: true
         }
       })
-/**
+
       // new ScriptExtHtmlWebpackPlugin( { defer: [ 'webcomponents-loader.js' ], } ),
  
       // copy custom static assets

@@ -1,3 +1,4 @@
 {
-    "plugins": ["syntax-dynamic-import"]
-  }
+
+  "plugins": ["syntax-dynamic-import", "transform-es2015-modules-amd"]
+}
