@@ -1,95 +1,156 @@
+<!--
+Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <!-- TITLE -->
-  <title>Chess Defense</title>
-  <!-- X-UA -->
-  <meta http-equiv="X-UA-Compatible"                      content="IE=edge">
-  <!-- VIEWPORT -->
-  <meta name="viewport"                                   content="width=device-width, initial-scale=1.0">
-  <!-- MANIFEST -->
-  <link rel="manifest"                                    href="manifest.json">
-  <!-- DESCRIPTION -->
-  <meta name="description"                                content="ChessDefense is a New Type of Game, a cross between Chess + Tower Defense!">
-  <!-- Disable tap highlight on IE -->
-  <meta name="msapplication-tap-highlight"                content="no">
-  <!-- Add to homescreen for Chrome on Android -->
-  <meta name="mobile-web-app-capable"                     content="yes">
-  <meta name="application-name"                           content="Chess Defense">
-  <meta name="theme-color"                                content="#303F9F">
-  <!-- Add to homescreen for Safari on iOS -->
-  <meta name="apple-mobile-web-app-capable"               content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style"      content="black-translucent">
-  <meta name="apple-mobile-web-app-title"                 content="Chess Defense">
-  <meta name="apple-mobile-web-app-status-bar-style"      content="#303F9F">
-  <!-- Tile icon for Win8 -->
-  <meta name="msapplication-TileColor"                    content="#3372DF">
-  <meta name="msapplication-navbutton-color"              content="#303F9F">
+  <head>
+    <meta charset="UTF-8">
+    <!-- TITILE -->
+    <title></title>
+    <!-- BASE -->
+    <base href="/">
+    <!-- VIEWPORT -->
+    <meta name="viewport"                               content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <!-- THEME COLOR -->
+    <meta name="theme-color"                            content="#303030">
+    <!-- MANIFEST -->
+    <link rel="manifest"                                href="manifest.json">
+    <!-- CANONICAL -->
+    <link rel="canonical"                               href="" />
+    <!-- AUTHOR -->
+    <meta name="author"                                 content="">
+    <!-- TIME -->
+    <meta http-equiv="If-Modified-Since"                content="Fri, 20 Apr 2018 14:30:59 GMT" />
+    <!-- DESCRIPTION -->
+    <meta name="description"                            content="">
+    <!-- KEYWORDS -->
+    <meta name="keywords"                               content="">
+    <!-- HTTPS REFERRER TAG-->
+    <meta name="referrer"                               content="no-referrer-when-downgrade">
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable"                 content="yes">
+    <meta name="application-name"                       content="">
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable"           content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style"  content="black-translucent">
+    <meta name="apple-mobile-web-app-title"             content="">
+    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage"                content="/images/manifest/icon-144x144.png">
+    <meta name="msapplication-TileColor"                content="">
+    <meta name="msapplication-tap-highlight"            content="no">
+    <!--TWITTER -->
+    <meta name="twitter:card"                           content="summary_large_image">
+    <meta name="twitter:title"                          content="">
+    <meta name="twitter:description"                    content="">
 
-  <style>
+    <script>
+      /**
+      * [polymer-root-path]
+      *
+      * By default, we set `Polymer.rootPath` to the server root path (`/`).
+      * Leave this line unchanged if you intend to serve your app from the root
+      * path (e.g., with URLs like `my.domain/` and `my.domain/view1`).
+      *
+      * If you intend to serve your app from a non-root path (e.g., with URLs
+      * like `my.domain/my-app/` and `my.domain/my-app/view1`), edit this line
+      * to indicate the path from which you'll be serving, including leading
+      * and trailing slashes (e.g., `/my-app/`).
+      */
+      window.Polymer = {rootPath: '/'};
 
-    body {
-      margin: 0px;
-      background-color: #303030;
-    }
-    
-    .site {
-      height: 100vh;
-      width: 100vw;
-      display: grid;
-      grid-template-rows: 64px auto 64px;
-    }
+      // Load and register pre-caching Service Worker
+      /*
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('service-worker.js', {
+            scope: Polymer.rootPath,
+          });
+        });
+      }
+      */
+    </script>
 
-  </style>
-</head>
+    <!-- JSON -->
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "WebApplication",
+        "datePublished": "2018-04-04T11:10:59Z",
+        "name": "",
+        "about": "",
+        "operatingSystem": "",
+        "applicationCategory": "",
+        "applicationSubCategory": "",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.5",
+          "reviewCount": "5"
+        },
+        "offer":"$0.00"
+      }
+    </script>
 
-<script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js" async></script> 
+    <style>
 
-<body>
-  <div class="site">
-    <head-navigation></head-navigation>
-    <main><chess-defense></chess-defense></main>
-    <foot-controls><foot-controls>
-  </div>
+      body {
+        font-family: Roboto, sans-serif;
+        /*  font-weight: 800; */
+        /*  text-shadow: 3px 2px black; */
+        margin: 0px;
+        min-height: 100vh;
+      }
 
-  <script type="module" src="./src/chess-defense.js"></script>
-  <script type="module" src="./src/head-navigation.js"></script>
-  <script type="module" src="./src/foot-controls.js"></script>
+      @media print { body { background-color: white; } }
+        
+      @keyframes spinner {
+        to {transform: rotate(360deg);}
+      }
+ 
+      .spinner:before {
+        content: '';
+        box-sizing: border-box;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 49px;
+        height: 49px;
+        margin-top: -10px;
+        margin-left: -10px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        border-top-color: #07d;
+        border-bottom-color: #07d;
+        animation: spinner .8s ease infinite;
+      }
 
-    <!--
+    </style>
 
-  <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
-  <script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyAJfm5MahdHr4HzwRLWN7IBhVYXMjP65lQ",
-    authDomain: "inmostfire.firebaseapp.com",
-    databaseURL: "https://inmostfire.firebaseio.com",
-    projectId: "inmostfire",
-    storageBucket: "inmostfire.appspot.com",
-    messagingSenderId: "937289126032"
-  };
-  firebase.initializeApp(config);
-  </script>
+  </head>
+  <script type="script" src='node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js'></script>
+  <script type="module" src='src/application-shell.js'></script>
+  <body>
 
-  -->
+    <!-- APPLICATION SHELL -->
 
-</body>
+    <div class="spinner"></div>
+
+    <application-shell unresolved fullbleed>
+      <span slot="search"> 
+
+        </span>
+        <span slot="advert">
+
+        </span>
+    </application-shell>
+
+    <noscript>
+      Please enable JavaScript to view this website.
+    </noscript>
+
+  </body>
 </html>
-
-
-    <!--
-
-  <script type="module" src="src/one-square.js" async></script>
-  <script type="module" src="src/four-square.js" async></script>
-  <script type="module" src="src/board-square.js" async></script>
-  <script type="module" src="src/chess-king.js" async></script>
-  <script type="module" src="src/chess-queen.js" async></script>
-  <script type="module" src="src/chess-rook.js" async></script>
-  <script type="module" src="src/chess-knight.js" async></script>
-  <script type="module" src="src/chess-bishop.js" async></script>
-  <script type="module" src="src/chess-pawn.js" async></script>
-  <script type="module" src="src/box-block.js" async></script>
-
-    -->
