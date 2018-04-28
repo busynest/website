@@ -1,14 +1,18 @@
 import { PolymerElement, html }       from '@polymer/polymer/polymer-element.js';
-import { updateMetadata }       from './metadata.js';
+import { updateMetadata }             from './metadata.js';
 
-class OneTwo extends PolymerElement {
+class PageOne extends PolymerElement {
 
-  static get is() { return 'one-two'; }
+  static get is() { return 'page-one'; }
 
     static get properties() {
       return {
 
       };
+    }
+  
+    static get observers() {
+      
     }
   
     constructor() {
@@ -22,6 +26,14 @@ class OneTwo extends PolymerElement {
         description: 'Best Page',
         url: document.location.href
       });
+    }
+  
+    disconnectedCallback() {
+      super.disconnectedcCallback();
+    }
+  
+    attributeChangedCallback() {
+      super.attributeChangedCallback();
     }
   
     ready() {
@@ -41,4 +53,4 @@ class OneTwo extends PolymerElement {
       `;
         }
       }
-  customElements.define("one-two", OneTwo);
+  customElements.define(PageOne.is, PageOne);

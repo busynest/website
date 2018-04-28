@@ -1,6 +1,6 @@
 
 import { PolymerElement, html }       from '@polymer/polymer/polymer-element.js';
-import { updateMetadata }       from './metadata.js';
+import { updateMetadata }           from './metadata.js';
 
 class SendFeedback extends PolymerElement {
 
