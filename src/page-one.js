@@ -1,7 +1,11 @@
-import { PolymerElement, html }       from '@polymer/polymer/polymer-element.js';
+import { LitElement, html }           from '@polymer/lit-element';
+import { AppView }                    from './app-view.js';
 import { updateMetadata }             from './metadata.js';
 
-class PageOne extends PolymerElement {
+import {Icon} from '../node_modules/@material/mwc-icon/mwc-icon.js';
+
+
+class PageOne extends AppView {
 
   static get is() { return 'page-one'; }
 
@@ -41,14 +45,18 @@ class PageOne extends PolymerElement {
       console.log(this.tagName);
     }
   
-    static get template() {
+    _render() {
       return html`
   
       <style>
 
       </style>
 
+      <mwc-icon></mwc-icon>
+
       <h1>New App</h1>
+
+
 
       `;
         }

@@ -1,35 +1,45 @@
+
 {
+
     "entrypoint": "index.html",
     "shell": "src/application-shell.js",
     "npm": true,
     "moduleResolution": "node",
     "license": "MIT",
-    "fragments": [
+
+    "fragments":
+    [
       "src/page-one.js",
       "src/send-feedback.js",
       "src/wrong-page.js",
       "src/metadata.js"
     ],
   
-    "sources": [
+    "sources":
+    [
       "src/**"
     ],
   
-    "extraDependencies": [
-      "node_modules/@webcomponents/webcomponentsjs/*.js",
+    "extraDependencies":
+    [
+      "node_modules/@webcomponents/webcomponentsjs/**",
+      "node_modules/@webcomponents/webcomponentsjs/bundles/**",
       "manifest.json",
       "package.json",
       "sitemap.xml",
       "robots.txt"
     ],
 
-    "lint": {
-      "rules": [
-        "polymer-3"
-      ]
+    "lint":
+    {
+      "rules":
+        [
+          "polymer-3"
+        ]
     },
   
-    "builds": [
+    "builds":
+    [
       {
         "name":                 "esm-bundled",
         "browserCapabilities":  [ "es2015", "modules" ],

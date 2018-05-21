@@ -20,8 +20,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import { PolymerElement, html }                     from '@polymer/polymer/polymer-element.js';
+import { LitElement, html }                         from '@polymer/lit-element';
 import { setPassiveTouchGestures, setRootPath }     from '@polymer/polymer/lib/utils/settings.js';
+
+import { ShellStyles }     from './shell-styles.js';
 
 import '@polymer/app-layout/app-header-layout/app-header-layout.js';
 import '@polymer/app-layout/app-drawer-layout/app-drawer-layout.js';
@@ -29,50 +31,95 @@ import '@polymer/app-layout/app-header/app-header.js';
 import '@polymer/app-layout/app-drawer/app-drawer.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 
-import '@polymer/app-route/app-location.js';
-import '@polymer/app-route/app-route.js';
-
 import '@polymer/iron-pages/iron-pages.js';
 import '@polymer/iron-selector/iron-selector.js';
-import '@polymer/iron-collapse/iron-collapse.js';
 import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
 
-import '@polymer/paper-card/paper-card.js';
-import '@polymer/paper-progress/paper-progress.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/paper-toggle-button/paper-toggle-button.js';
-import '@polymer/paper-item/paper-item.js';
-import '@polymer/paper-slider/paper-slider.js';
-import '@polymer/paper-button/paper-button.js';
+ import { installRouter }              from 'pwa-helpers/router.js';
+ import { installOfflineWatcher }      from 'pwa-helpers/network.js';
+ import { installMediaQueryWatcher }   from 'pwa-helpers/media-query.js';
+ import { updateMetadata }             from 'pwa-helpers/metadata.js';
+ import { menuIcon }                   from './my-icons.js';
+ import './snack-bar.js';
 
-setPassiveTouchGestures(true);
-
-setRootPath(Polymer.rootPath);
-
-class ApplicationShell extends PolymerElement {
+class ApplicationShell extends LitElement {
 
   static get is() { return 'application-shell'; }
 
   static get properties() {
     return {
-      page:         { type: String, reflectToAttribute: true, observer: '_pageChanged' },
-      routeData:    Object,
-      subroute:     Object,
-      opened:       { type: Boolean, reflectToAttribute: true },
-      horizontal:   { type: Boolean },
-      noAnimation:  { type: Boolean },
+      appTitle:         String,
+      _page:            String,
+      _drawerOpened:    Boolean,
+      _snackbarOpened:  Boolean,
+      _offline:         Boolean,
+      opened:           { type: Boolean, reflectToAttribute: true },
+      horizontal:       { type: Boolean },
+      noAnimation:      { type: Boolean },
     };
-  }
-
-  static get observers() {
-    return [
-      '_routePageChanged(routeData.page)',
-    ];
   }
 
   constructor() {
     super();
-    //this.rootPattern = (new URL(this.rootPath)).pathname;
+    this._drawerOpened = false;
+    setPassiveTouchGestures(true);
+  }
+
+  _firstRendered() {
+    installRouter((location)          => this._locationChanged(location));
+    installOfflineWatcher((offline)   => this._offlineChanged(offline));
+    installMediaQueryWatcher(`(min-width: 460px)`,
+        (matches) => this._layoutChanged(matches));
+  }
+
+  _didRender(properties, changeList) {
+
+    if ('_page' in changeList) {
+
+      const pageTitle = properties.appTitle + ' - ' + changeList._page;
+      updateMetadata({
+          title: pageTitle,
+          description: pageTitle
+          // This object also takes an image property, that points to an img src.
+      });
+    }
+
+  }
+
+  _layoutChanged(isWideLayout) {
+    // The drawer doesn't make sense in a wide layout, so if it's opened, close it.
+    this._updateDrawerState(false);
+  }
+
+  _offlineChanged(offline) {
+    const previousOffline = this._offline;
+    this._offline = offline;
+
+    // Don't show the snackbar on the first load of the page.
+    if (previousOffline === undefined) {
+      return;
+    }
+
+  clearTimeout(this.__snackbarTimer);
+    this.snackbarOpened = true;
+    this.__snackbarTimer = setTimeout(() => { this.snackbarOpened = false }, 3000);
+  }
+
+  _locationChanged() {
+    const path = window.decodeURIComponent(window.location.pathname);
+    const page = path === '/' ? 'page-one' : path.slice(1);
+    this._loadPage(page);
+    // Any other info you might want to extract from the path (like page type),
+    // you can do here.
+
+    // Close the drawer - in case the *path* change came from a link in the drawer.
+    this._updateDrawerState(false);
+  }
+
+  _updateDrawerState(opened) {
+    if (opened !== this._drawerOpened) {
+      this._drawerOpened = opened;
+    }
   }
 
   connectedCallback() {
@@ -89,38 +136,24 @@ class ApplicationShell extends PolymerElement {
     console.log(this.tagName);
   }
 
-  _routePageChanged(page) {
-    if (!page) {
-      // If no page was found in the route data, page will be an empty string.
-      // Default to 'view1' in that case.
-      this.page = 'one-two';
-    } else if (['page-one', 'send-feedback'].indexOf(page) !== -1) {
-      this.page = page;
-    } else {
-      this.page = 'wrong-page';
-    }
+  async _loadPage(page) {
 
-    // Close a non-persistent drawer when the page & route are changed.
-    if (!this.$.drawer.persistent) {
-      this.$.drawer.close();
-    }
-  }
-
-  _pageChanged(page) {
-    // Load page import on demand. Show 404 page if fails
-    // Note: `polymer build` doesn't like string concatenation in
-    // the import statement, so break it up.
     switch(page) {
+
       case 'page-one':
-        import('./page-one.js');
+        await import('./page-one.js');
         break;
+
       case 'send-feedback':
-        import('./send-feedback.js');
+        await import('./send-feedback.js');
         break;
-      case 'wrong-page':
-        import('./wrong-page.js');
-        break;
+
+      default:
+      page = 'wrong-page';
+        await import('./wrong-page.js');
+
     }
+    this._page = page;
   }
 
   _toggleSearch() {
@@ -131,46 +164,168 @@ class ApplicationShell extends PolymerElement {
     return opened ? 'Collapse' : 'Expand';
   }
 
-  static get template() {
+  _render({appTitle, _page, _drawerOpened, _snackbarOpened, _offline}) {
     return html`
 
     <style>
     :host {
-        --app-primary-color:                  black;
-        --app-secondary-color:                black;
-        /*
-        --app-drawer-width:                   px;
-        */
+      --app-drawer-width:                     200px;
+        display:                              block;
+
+        --app-primary-color:                  #E91E63;
+        --app-secondary-color:                #293237;
+
+        --app-dark-text-color:                var(--app-secondary-color);
+        --app-light-text-color:               white;
+
+        --app-section-even-color:             #f7f7f7;
+        --app-section-odd-color:              white;
+
+        --app-header-background-color:        white;
+        --app-header-text-color:              var(--app-dark-text-color);
+        --app-header-selected-color:          var(--app-primary-color);
+
+        --app-drawer-background-color:        var(--app-secondary-color);
+        --app-drawer-text-color:              var(--app-light-text-color);
+        --app-drawer-selected-color:          #78909C;
+        
         --paper-progress-container-color:     black;
-        --app-drawer-content-container:{
-          background-color:                   transparent;
-        }
-        display: block;
-      }
-
-      @media print {
-
-      }
-
-      @media only screen and (min-width: 600px) {
-
-      }
-
-      app-drawer-layout:not([narrow]) [drawer-toggle] { display: none; }
-
-      a               { text-decoration: none; }
-      app-header      {  }
-      app-toolbar     {  }
-      app-drawer      { overflow: auto; }
-      paper-progress  { width: 100%; }
-      iron-pages      { width: 100%; height: 100%; }
-      paper-item      {  }
-      h1              {  }
-      h2              {  }
+    }
 
     </style>
 
-    <iron-iconset-svg size="24" name="myicons">
+    ${ShellStyles}
+
+    <!-- APP DRAWER LAYOUT -->
+    <app-drawer-layout
+      fullbleed>
+
+    <!-- APP DRAWER -->
+    <app-drawer
+      slot="drawer"
+      align="end"
+      opened="${_drawerOpened}"
+      on-opened-changed="${e => this._updateDrawerState(e.target.opened)}">
+
+      <!-- MENU -->
+      <div style=" height: 60px;">
+      </div>
+
+      <nav class="drawer-list">
+        <a selected?="${_page === 'page-one'}"      href="/page-one">View One</a>
+        <a selected?="${_page === 'send-feedback'}" href="/send-feedback">View Two</a>
+      </nav>
+
+    </app-drawer>
+
+    <!-- APP HEADER LAYOUT -->
+    <app-header-layout
+      fullbleed>
+
+      <!-- APP HEADER -->
+      <app-header
+        slot="header"
+        class="toolbar-top"
+        fixed>
+
+        <!-- APP-TOOLBAR #1 -->
+        <app-toolbar>
+
+          <!-- TITLE -->
+          <div main-title>${appTitle}</div>
+
+          <button class="menu-btn" title="Menu" on-click="${_ => this._updateDrawerState(true)}" drawer-toggle>${menuIcon}</button>
+
+        </app-toolbar>
+
+        <!-- This gets hidden on a small screen-->
+        <nav class="toolbar-list">
+          <a selected?="${_page === 'page-one'}"      href="/page-one">View One</a>
+          <a selected?="${_page === 'send-feedback'}" href="/send-feedback">View Two</a>
+        </nav>
+
+      </app-header>
+
+      <!-- BODY -->
+      <main class="main-content">
+
+        <!-- SEARCH CARD -->
+        <iron-collapse
+          id="collapse"
+          opened="{{opened}}"
+          horizontal="[[horizontal]]"
+          no-animation="[[noAnimation]]"
+          tabindex="0">
+
+            <website-card>
+              <!-- GOOGLE CUSTOM SEARCH -->
+              <slot name="search"></slot>
+            </website-card>
+        
+        </iron-collapse>
+            
+            <website-card>
+              <!-- GOOGLE ADVERTIZMENT -->
+              <slot name="advert"></slot>
+            </website-card>
+
+        <!-- IRON PAGES -->
+        <iron-pages
+          class="magicPagesOne"
+          role="main"
+          selected="[[page]]"
+          attr-for-selected="name"
+          fallback-selection="wrong-page">
+
+          <!-- PAGE ONE -->
+          <page-one       class="page" active?="${_page === 'page-one'}"></page-one>
+
+          <!-- WRONG PAGE -->
+          <send-feedback  class="page" active?="${_page === 'send-feedback'}"></send-feedback> 
+
+          <!-- WRONG PAGE -->
+          <wrong-page     class="page" active?="${_page === 'wrong-page'}"></wrong-page>            
+
+        </iron-pages>
+      </main>
+      
+      <!-- FOOTER -->
+      <footer>
+        <p>Modern Projects</p>
+      </footer>
+
+      <!-- SNACK BAR -->
+      <snack-bar active?="${_snackbarOpened}">
+        You are now ${_offline ? 'offline' : 'online'}.</snack-bar>
+
+    </app-drawer-layout>
+  </app-header-layout>
+  `
+  }
+
+}
+
+customElements.define(ApplicationShell.is, ApplicationShell);
+
+/*
+
+      <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+        <a name="page-one"       href="[[rootPath]]page-one"><paper-item><h2>Page One</h2></paper-item></a>  
+        <a name="send-feedback"  href="[[rootPath]]send-feedback"><paper-item><h2>Feedback</h2></paper-item></a>     
+      </iron-selector>
+
+                <!-- SEARCH 
+          <paper-icon-button 
+            id="trigger"
+            role="button"
+            icon="myicons:search"
+            on-click="_toggleSearch"
+            aria-expanded$="[[opened]]"
+            aria-controls="collapse">[[_getText(opened)]]
+          </paper-icon-button>
+          -->
+
+      <iron-iconset-svg size="24" name="myicons">
       <svg>
         <defs>
 
@@ -187,146 +342,4 @@ class ApplicationShell extends PolymerElement {
       </svg>
     </iron-iconset-svg>
 
-    <!-- APP LOCATION -->
-    <app-location
-      route=              "{{route}}"
-      url-space-regex=    "^[[rootPath]]">
-    </app-location>
-
-    <!-- APP ROUTE -->
-    <app-route
-      route=    "{{route}}"
-      pattern=  "[[rootPath]]:page"
-      data=     "{{routeData}}"
-      tail=     "{{subroute}}"></app-route>
-
-    <!-- APP DRAWER LAYOUT -->
-    <app-drawer-layout
-      fullbleed>
-
-    <!-- APP DRAWER -->
-    <app-drawer
-      class="colors"
-      slot="drawer"
-      id="drawer"
-      align="end"
-      fullbleed>
-
-      <!-- MENU -->
-      <div style=" height: 60px;">
-      </div>
-
-      <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-        <a name="page-one"       href="[[rootPath]]page-one"><paper-item><h2>Page One</h2></paper-item></a>  
-        <a name="send-feedback" href="[[rootPath]]send-feedback"><paper-item><h2>Feedback</h2></paper-item></a>     
-      </iron-selector>
-
-    </app-drawer>
-
-    <!-- APP HEADER LAYOUT -->
-    <app-header-layout
-      fullbleed>
-
-      <!-- APP HEADER -->
-      <app-header
-        slot="header"
-        fixed>
-
-        <!-- APP-TOOLBAR #1 -->
-        <app-toolbar>
-
-          <!-- PAPER-PROGRESS -->
-          <paper-progress 
-            bottom-item></paper-progress> 
-
-          <!-- BUSINESS LOGO -->
-          <div>
-            <h1
-              class="appTitle"
-              main-title>Website Application</h1>
-          </div>
-
-          <!-- SPAN DIVIDER -->
-          <span class="flex" style="flex:1;"></span>
-
-          <!-- SEARCH -->
-          <paper-icon-button 
-            id="trigger"
-            role="button"
-            icon="myicons:search"
-            on-click="_toggleSearch"
-            aria-expanded$="[[opened]]"
-            aria-controls="collapse">[[_getText(opened)]]
-          </paper-icon-button>
-
-          <!-- PRINT -->
-          <paper-icon-button 
-            class="colored"
-            role="button"
-            onclick="window.print()"
-            icon="myicons:print"></paper-icon-button>
-
-          <!-- DRAWER TOGGLE -->
-          <paper-icon-button
-            drawer-toggle
-            class="colored"
-            role="button"
-            id="printButton"
-            icon="myicons:menu"></paper-icon-button>
-
-        </app-toolbar>
-      </app-header>
-
-      <!-- BODY -->
-      <main>
-
-        <!-- SEARCH CARD -->
-        <iron-collapse
-          id="collapse"
-          opened="{{opened}}"
-          horizontal="[[horizontal]]"
-          no-animation="[[noAnimation]]"
-          tabindex="0">
-
-            <paper-card>
-              <!-- GOOGLE CUSTOM SEARCH -->
-              <slot name="search"></slot>
-            </paper-card>
-        
-        </iron-collapse>
-            
-            <paper-card>
-              <!-- GOOGLE ADVERTIZMENT -->
-              <slot name="advert"></slot>
-            </paper-card>
-
-        <!-- IRON PAGES -->
-        <iron-pages
-          class="magicPagesOne"
-          role="main"
-          selected="[[page]]"
-          attr-for-selected="name"
-          fallback-selection="wrong-page">
-
-          <!-- PAGE ONE -->
-          <page-one
-            name="page-one"></page-one>
-
-          <!-- WRONG PAGE -->
-          <send-feedback
-            name="send-feedback"></send-feedback> 
-
-          <!-- WRONG PAGE -->
-          <wrong-page
-            name="wrong-page"></wrong-page>            
-
-        </iron-pages>
-      </main>
-    </app-drawer-layout>
-  </app-header-layout>
-  `
-  }
-
-}
-
-customElements.define(ApplicationShell.is, ApplicationShell);
+*/

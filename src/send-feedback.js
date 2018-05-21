@@ -1,8 +1,9 @@
 
-import { PolymerElement, html }       from '@polymer/polymer/polymer-element.js';
+import { LitElement, html }         from '@polymer/lit-element';
+import { AppView }                  from './app-view.js';
 import { updateMetadata }           from './metadata.js';
 
-class SendFeedback extends PolymerElement {
+class SendFeedback extends AppView {
 
   static get is() { return 'send-feedback'; }
 
@@ -29,7 +30,7 @@ class SendFeedback extends PolymerElement {
     super.ready();
   }
 
-  static get template() {
+  _render() {
     return html`
 
     <h1>Feedback</h1>

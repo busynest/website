@@ -1,7 +1,8 @@
-import { PolymerElement, html }       from "@polymer/polymer/polymer-element.js"
+import { LitElement, html }     from "@polymer/lit-element";
+import { AppView }              from './app-view.js';
 import { updateMetadata }       from './metadata.js';
 
-class WrongPage extends PolymerElement {
+class WrongPage extends AppView {
 
   static get is() { return 'wrong-page'; }
 
@@ -30,7 +31,7 @@ class WrongPage extends PolymerElement {
     console.log(this.tagName);
   }
 
-  static get template() {
+  _render() {
     return html`
       <style>
         :host {
