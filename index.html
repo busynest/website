@@ -1,13 +1,7 @@
-<!--
-Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+
 <!doctype html>
 <html lang="en">
+
   <head>
     <meta charset="UTF-8">
     <!-- TITILE -->
@@ -56,20 +50,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta name="twitter:title"                          content="" />
     <meta name="twitter:description"                    content="" />
 
-    <script>
-      //window.Polymer = {rootPath: '/'};
-      /**
-      // Load and register pre-caching Service Worker
-      /*
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('service-worker.js', {
-            scope: Polymer.rootPath,
-          });
-        });
+    <style>
+  /*
+      @font-face {
+        font-family: 'Pacifico';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Pacifico Regular'), local('Pacifico-Regular'), url(https://fonts.gstatic.com/s/pacifico/v12/Q_Z9mv4hySLTMoMjnk_rCXYhjbSpvc47ee6xR_80Hnw.woff2) format('woff2');
       }
-      */
-    </script>
+  */
+      body {
+        margin: 0px;
+        min-height: 100vh;
+        font-family: Roboto, sans-serif;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        /*  font-weight: 800; */
+        /*  text-shadow: 3px 2px black; */
+      }
+
+      @media print { body { background-color: white; } }
+
+    </style>
 
     <!-- JSON -->
     <script type="application/ld+json">
@@ -91,111 +93,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </script>
 
-    <style>
-
-      @font-face {
-        font-family: 'Pacifico';
-        font-style: normal;
-        font-weight: 400;
-        src: local('Pacifico Regular'), local('Pacifico-Regular'), url(https://fonts.gstatic.com/s/pacifico/v12/Q_Z9mv4hySLTMoMjnk_rCXYhjbSpvc47ee6xR_80Hnw.woff2) format('woff2');
+    <!-- SERVICE WORKER -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator
+          .serviceWorker
+          .register('/sw.js')
+          .then(registration => { console.log(`Service Worker registered! Scope: ${registration.scope}`); })
+          .catch(error => { console.log(`Service Worker registration failed: ${error}`); });
+        });
       }
+    </script>
 
-      body {
-        margin: 0px;
-        min-height: 100vh;
-        font-family: Roboto, sans-serif;
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-        /*  font-weight: 800; */
-        /*  text-shadow: 3px 2px black; */
-      }
-
-      @media print { body { background-color: white; } }
-        
-      @keyframes spinner {
-        to {transform: rotate(-360deg);}
-      }
-
-      @keyframes spinnerB {
-        to {transform: rotate(360deg);}
-      }
- 
-      .spinner:before {
-        content: '';
-        box-sizing: border-box;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 49px;
-        height: 49px;
-        margin-top: -10px;
-        margin-left: -10px;
-        border-radius: 50%;
-        border: 2px solid transparent;
-        border-top-color: #07d;
-        border-bottom-color: #07d;
-        animation: spinner 3s ease infinite;
-      }
-
-      .spinner:before {
-        content: '';
-        box-sizing: border-box;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 49px;
-        height: 49px;
-        margin-top: -10px;
-        margin-left: -90px;
-        border-radius: 50%;
-        border: 2px solid transparent;
-        border-top-color: #07d;
-        border-bottom-color: #07d;
-        animation: spinner 3s ease infinite;
-      }
-
-      .spinnerB:before {
-        content: '';
-        box-sizing: border-box;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 49px;
-        height: 49px;
-        margin-top: -10px;
-        margin-left: -10px;
-        border-radius: 50%;
-        border: 2px solid transparent;
-        border-top-color: #07d;
-        border-bottom-color: #07d;
-        animation: spinnerB 3s ease infinite;
-      }
-
-      .spinnerB:before {
-        content: '';
-        box-sizing: border-box;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 49px;
-        height: 49px;
-        margin-top: -10px;
-        margin-left: -10px;
-        border-radius: 50%;
-        border: 2px solid transparent;
-        border-top-color: #07d;
-        border-bottom-color: #07d;
-        animation: spinnerB 3s ease infinite;
-      }
-
-    </style>
-
+    <!-- Redux assumes `process.env.NODE_ENV` exists in the ES module build. https://github.com/reactjs/redux/issues/2907 -->
+    <script async>
+      window.process = { env: { NODE_ENV: 'production' } };
+    </script>
+    
   </head>
 
   <body>
-
-    <!-- LOADER / SPINNER -->
-    <div class="spinner"></div><div class="spinnerB"></div>
 
     <!-- NO SCRIPT -->
     <noscript>
@@ -204,38 +122,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <!-- APPLICATION SHELL -->
     <application-shell appTitle="website">
-      <span slot="search"> 
-
-        </span>
-        <span slot="advert">
-
-        </span>
+        <span slot="search">   </span>
+        <span slot="advert">   </span>
     </application-shell>
 
     <script src='node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js'></script>
-    <script type="module" src='./src/application-shell.js'></script>
+    <script type="module" src='./deploy/application-shell.js'></script>
 
   </body>
+
 </html>
-
-<!--
-
-Polymer + Webpack
-
-  "devDependencies": {
-    "wct-browser-legacy": "^0.0.1-pre.12",
-    "webpack": "^4.5.0",
-    "webpack-dashboard": "^1.1.1",
-    "webpack-bundle-analyzer": "^2.11.1",
-    "babel-loader": "^8.0.0-beta.2",
-    "babel-core": "^6.26.0",
-    "babel-plugin-syntax-dynamic-import": "^6.18.0",
-    "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
-    "babel-preset-es2015": "^6.24.1",
-    "clean-webpack-plugin": "^0.1.19",
-    "html-loader": "^0.5.5",
-    "html-webpack-plugin": "^3.2.0",
-    "uglifyjs-webpack-plugin": "^1.2.5"
-  }
-
--->
