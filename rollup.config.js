@@ -68,7 +68,9 @@
     }),
   ],
   output: {
-    dir: 'build',
+    dir: 'public/dist',
+    format: 'es', // immediately-invoked function expression — suitable for <script> tags
+    sourcemap: true
   },
   preserveEntrySignatures: 'strict',
 };

@@ -9,22 +9,11 @@ Millions of developers and companies build, ship, and maintain their software on
 
 ...create a new repository on the command line
 echo "# projectName" >> README.md
-
-git init
-
-git add README.md
-
-git commit -m "first commit"
-
-git remote add origin https://github.com/user/project.git
-
-git push -u origin master
-
-…or push an existing repository from the command line
-
-git remote add origin https://github.com/user/project.git
-
-git push -u origin master
+  * git init
+  * git remote add origin https://github.com/user/project.git
+  * git add .
+  * git commit -m "first commit"
+  * git push -u origin master
 
 # [NODEJS](https://nodejs.org/en/)
 
@@ -336,6 +325,32 @@ Rollup is a module bundler for JavaScript which compiles small pieces of code in
 
 # [ES BUILD](https://esbuild.github.io/getting-started/)
 
+https://rollupjs.org/guide/en/
+
+https://www.npmjs.com/package/rollup-plugin-visualizer
+
 It's written in Go and compiles to native code.
 
 .\node_modules\.bin\esbuild --version
+
+    "build": "polymer build --auto-base-path && workbox generateSW workbox-config.js",
+    "watch-server": "web-dev-server --node-resolve --watch --open",
+    "report": "lighthouse http://localhost:8000/",
+    "analyze": "wca analyze \"src/**/*.ts\" --outFile custom-elements.json",
+    "analyzer": "custom-elements-manifest analyze",
+    "web-analyze": "npx web-component-analyzer src",
+    "output-1": "web-component-analyzer     analyze application-shell.js --outFile custom-elements.json",
+    "output-2": "custom-elements-manifest   analyze --litelement --exclude \"docs/**/*\" \"test-helpers/**/*\"",
+    "dev-server": "web-dev-server --node-resolve --open",
+    "watch-build": "tsc --watch",
+    "build-watch": "web-dev-server --node-resolve --watch --open && tsc --watch",
+    "lint": "npm run lint:lit-analyzer && npm run lint:eslint",
+    "lint2": "eslint \"**/*.{js,ts}\"",
+    "lint:eslint": "eslint 'src/**/*.ts'",
+    "lint:lit-analyzer": "lit-analyzer",
+    "workbox-wizard": "workbox wizard",
+    "workbox-new": "workbox generateSW sw/workbox-config.js",
+    "workbox-inject": "workbox injectManifest path/to/config.js",
+    "long": "rollup deploy/application-shell.js --format es --name 'ApplicationShell' --file application-shell.js",
+    "building": "rimraf dist && rollup -c rollup.config.js"
+  },

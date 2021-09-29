@@ -36,7 +36,6 @@
   ],
   "exclude": [
     "garbage/**/*.ts",
-    "node_modules/**/*",
-    "node_modules/@types/eslint/index.d.ts"
+    "node_modules/**/*"
   ]
 }
